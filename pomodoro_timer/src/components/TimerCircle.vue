@@ -1,52 +1,78 @@
 <script setup>
-import { watch, computed } from 'vue'
+import { computed } from 'vue'
 
 const props = defineProps({
-  remainTimeInSecond: Number,
+  progress: {
+    type: Number,
+    default: 0,
+  },
+  total: {
+    type: Number,
+    default: 1,
+  },
 })
 
-const remainTimeDisplay = computed(() => {
-  const minutes = Math.floor(props.remainTimeInSecond / 60)
-  const seconds = props.remainTimeInSecond % 60
-  return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
-})
+// SVG circle properties - responsive
+const radius = computed(() => 90) // Để margin cho stroke
+const circumference = computed(() => 2 * Math.PI * radius.value)
 
-watch(remainTimeDisplay, (newVal) => {
-  console.log('Counter display updated to:', newVal)
+// Tính stroke-dashoffset từ percent (0-1)
+const strokeDashoffset = computed(() => {
+  return circumference.value - (props.progress / props.total) * circumference.value
 })
 </script>
 
 <template>
   <div class="timer-circle-container">
-    <div class="timer-circle-border">
-      <!-- <h1 class="timer-display">{{ counterDisplay }}</h1> -->
-      <h1 class="timer-display" v-text="remainTimeDisplay"></h1>
+    <svg class="timer-svg" viewBox="0 0 200 200">
+      <!-- Background circle -->
+      <circle cx="100" cy="100" :r="radius" fill="none" stroke="#353535" stroke-width="6" />
+      <!-- Progress circle -->
+      <circle
+        cx="100"
+        cy="100"
+        :r="radius"
+        fill="none"
+        stroke="#efa844"
+        stroke-width="6"
+        :stroke-dasharray="circumference"
+        :stroke-dashoffset="strokeDashoffset"
+        stroke-linecap="round"
+        transform="rotate(-90 100 100)"
+        class="progress-circle"
+      />
+    </svg>
+    <div class="timer-content">
+      <slot>Time display</slot>
     </div>
   </div>
 </template>
+
 <style scoped>
 .timer-circle-container {
-  margin: 0;
-  padding: 0;
-  /* background-color: #1e1e1e; */
-  aspect-ratio: 1 / 1;
+  width: 100%;
+  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
 }
-.timer-circle-border {
-  width: 200px;
-  height: 200px;
-  border: 6px solid #efa844;
-  border-radius: 50%;
+
+.timer-svg {
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.timer-content {
+  position: absolute;
   display: flex;
   justify-content: center;
   align-items: center;
-  box-sizing: border-box;
+  z-index: 2;
 }
-.timer-display {
-  color: white;
-  font-size: 40px;
-  font-weight: bold;
+
+.progress-circle {
+  transition: stroke-dashoffset 0.3s ease-in-out;
 }
 </style>

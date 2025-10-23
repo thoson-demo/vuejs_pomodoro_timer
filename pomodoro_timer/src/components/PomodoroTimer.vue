@@ -1,4 +1,5 @@
 <script setup>
+import TimerDisplay from './TimerDisplay.vue'
 import TimerCircle from './TimerCircle.vue'
 import TimerControl from './TimerControl.vue'
 import { Status } from '../models/Status'
@@ -57,7 +58,12 @@ onUnmounted(() => {
 
 <template>
   <div class="pomodoro-container">
-    <TimerCircle :remainTimeInSecond="remainTimeInSecond" />
+    <TimerCircle :progress="remainTimeInSecond" :total="pomodoroDurationInSecond">
+      <TimerDisplay
+        :remainTimeInSecond="remainTimeInSecond"
+        :totalTimeInSecond="pomodoroDurationInSecond"
+      />
+    </TimerCircle>
     <TimerControl @actions="onActions" />
   </div>
 </template>
@@ -65,6 +71,7 @@ onUnmounted(() => {
 <style scoped>
 .pomodoro-container {
   width: 300px;
+  padding: 16px;
   background: #1e1e1e;
   border: #353535 6px solid;
   border-radius: 16px;
@@ -72,5 +79,6 @@ onUnmounted(() => {
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
+  gap: 8px;
 }
 </style>

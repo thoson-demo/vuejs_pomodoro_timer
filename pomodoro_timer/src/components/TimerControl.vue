@@ -22,7 +22,6 @@ function stop() {
 </template>
 <style scoped>
 .timer-control-container {
-  margin-bottom: 24px;
   padding: 0;
   display: flex;
   gap: 16px;
