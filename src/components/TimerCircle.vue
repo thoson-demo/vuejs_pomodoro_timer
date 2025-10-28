@@ -37,7 +37,7 @@ const strokeDashoffset = computed(() => {
         stroke-width="6"
         :stroke-dasharray="circumference"
         :stroke-dashoffset="strokeDashoffset"
-        stroke-linecap="round"
+        stroke-linecap="butt"
         transform="rotate(-90 100 100)"
         class="progress-circle"
       />
